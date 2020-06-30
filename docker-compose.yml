@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  service:
+    image: mhart/alpine-node:8
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - 8000:8000
+    links:
+      - mongo
+    command: ['yarn', 'dev:docker']
+  mongo:
+    image: mongo
+    ports:
+      - 27018:27017
+    volumes:
+      - ./mongo/db:/data/db
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
