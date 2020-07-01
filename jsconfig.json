@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "database/*": ["src/database/*"],
+      "helper/*": ["./helper/*"],
+      "models/*": ["./models/*"],
+      "resolvers/*": ["./resolvers/*"]
+    }
+  }
+}

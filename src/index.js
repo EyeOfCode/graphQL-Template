@@ -2,15 +2,14 @@
 
 const path = require("path");
 require("dotenv").config({
-  path: path.join(__dirname, ".env"),
+  path: path.join(__dirname, "../.env"),
 });
 const { ApolloServer } = require("apollo-server");
+const { importSchema } = require("graphql-import");
 const mongodb = require("./database");
 
-const fs = require("fs");
-const typeDefs = fs.readFileSync("./src/schema.graphql", { encoding: "utf-8" });
-
-const resolvers = require("./src/resolvers");
+const typeDefs = importSchema("src/schema.graphql");
+const resolvers = require("./resolvers");
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
@@ -21,7 +20,7 @@ const init = async () => {
   await mongodb();
 };
 
-server.listen({ host: HOST, port: PORT }).then(({ url, ...res }) => {
+server.listen({ host: HOST, port: PORT }).then(({ url }) => {
   init();
   console.log(`🚀  Server ready at ${url}`);
 });
