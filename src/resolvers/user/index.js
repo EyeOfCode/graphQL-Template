@@ -1,18 +1,36 @@
-const UserModle = require("../../model/User");
-const MockModle = require("../../model/Mock");
+const userDao = require("../../dao/user");
+const mockDao = require("../../dao/mock");
+
+const { genneratePassword, checkPassword } = require("../../helper/password");
 
 const Query = {
   users: () => {
-    return UserModle.find();
+    return userDao.query();
   },
   userById: (root, { id }) => {
-    return UserModle.findById(id);
+    return userDao.getById(id);
   },
 };
 
 const Mutation = {
-  async createUser(root, { input }) {
-    return UserModle.create(input);
+  createUser: async (root, { input }) => {
+    const { password } = input;
+    const hashPass = await genneratePassword(password);
+
+    return userDao.create({ ...input, password: hashPass });
+  },
+  login: async (root, { input }) => {
+    const { email, password } = input;
+    try {
+      const user = await userDao.findOne({ email });
+      const checkPass = await checkPassword(password, user.password);
+      if (user && checkPass) {
+        return user;
+      }
+      return new Error("User not found");
+    } catch (err) {
+      throw new Error("500");
+    }
   },
 };
 
@@ -22,7 +40,7 @@ const CustomField = {
       return root._id + ":" + root.name;
     },
     books: (root) => {
-      return MockModle;
+      return mockDao.query();
     },
   },
 };

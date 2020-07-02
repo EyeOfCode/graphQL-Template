@@ -1,3 +1,21 @@
+directive @constraint(
+  # String constraints
+  minLength: Int
+  maxLength: Int
+  startsWith: String
+  endsWith: String
+  notContains: String
+  pattern: String
+  format: String
+ 
+  # Number constraints
+  min: Int
+  max: Int
+  exclusiveMin: Int
+  exclusiveMax: Int
+  multipleOf: Int
+) on INPUT_FIELD_DEFINITION
+
 # book
 type Book {
   title: String
@@ -14,7 +32,11 @@ type User {
 input UserInput {
   email: String! @constraint(minLength: 5, format: "email")
   name: String!
-  password: String!
+  password: String! @constraint(minLength: 4, pattern: "^[0-9a-zA-Z]*$")
+}
+input Login {
+  email: String! @constraint(minLength: 5, format: "email")
+  password: String! @constraint(minLength: 4, pattern: "^[0-9a-zA-Z]*$")
 }
 
 type Query {
@@ -25,4 +47,5 @@ type Query {
 
 type Mutation {
   createUser(input: UserInput): User
+  login(input: Login): User
 }
