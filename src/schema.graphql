@@ -12,7 +12,7 @@ type User {
   books: [Book]
 }
 input UserInput {
-  email: String!
+  email: String! @constraint(minLength: 5, format: "email")
   name: String!
   password: String!
 }
